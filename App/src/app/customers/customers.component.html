@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<div class="container mt-5">
+  <div class="card mb-5 mt-xxl-4" *ngIf="!isEditFormVisible && !isDeleteFormVisible">
+    <div class="card-body">
+      <form [formGroup]="addCustomerForm" (ngSubmit)="addCustomer()">
+        <div class="form-group">
+          <label for="addName">Name</label>
+          <input type="text" id="addName" class="form-control" formControlName="name" >
+        </div>
+        <div class="form-group">
+          <label for="addEmail">Email</label>
+          <input type="email" id="addEmail" class="form-control" formControlName="email">
+        </div>
+        <button type="submit" class="btn btn-primary w-50 mt-2 mb-2">Add Customer</button>
+        <button type="reset" class="btn btn-light w-50 mt-2 mb-2">Reset</button>
+      </form>
+      <div class="alert alert-success" role="alert" *ngIf="succesmessageAddCustomer">
+        {{ succesmessageAddCustomer }}
+      </div>
+      <div *ngIf="errormessageAddCustomer.length">
+        <div *ngFor="let error of errormessageAddCustomer" class="alert alert-danger" role="alert">
+          {{ error }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isDeleteFormVisible" class="edit-form-container">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">Are you you sure to delete the Customer</h3>
+        <button type="submit" class="btn btn-danger w-50 mt-2 mb-2" (click)="deleteCustomer()">Delete</button>
+        <button type="button" class="btn btn-secondary w-50 mt-2 mb-2" (click)="closeDeleteForm()">Cancel</button>
+      </div>
+      <div class="alert alert-success" role="alert" *ngIf="succesmessage">
+        {{succesmessage}}
+      </div>
+      <div  *ngIf="errormessage.length">
+        <div *ngFor="let error of errormessage" class="alert alert-danger" role="alert">
+            {{error}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container mt-5">
+    <div *ngIf="isEditFormVisible" class="edit-form-container">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Edit Customer</h3>
+          <form [formGroup]="editCustomerForm" (ngSubmit)="updateCustomer()">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" required="required" class="form-control" formControlName="name">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" required="required" class="form-control" formControlName="email">
+            </div>
+            <button type="submit" class="btn btn-primary w-50 mt-2 mb-2">Save changes</button>
+            <button type="button" class="btn btn-secondary w-50 mt-2 mb-2" (click)="closeEditForm()">Cancel</button>
+          </form>
+          <div class="alert alert-success" role="alert" *ngIf="succesmessage">
+            {{succesmessage}}
+          </div>
+          <div  *ngIf="errormessage.length">
+            <div *ngFor="let error of errormessage" class="alert alert-danger" role="alert">
+                {{error}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  <div class="row mt-5" *ngIf="!isEditFormVisible && !isDeleteFormVisible">
+    <h2 class="mb-4">Customer List</h2>
+    <div class="col-md-12">
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customer of customers">
+            <td>{{ customer.id }}</td>
+            <td>{{ customer.name }}</td>
+            <td>{{ customer.email }}</td>
+            <td>
+              <button class="btn btn-primary btn-sm" (click)="editCustomer(customer)">Edit</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteCustomerForm(customer)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
