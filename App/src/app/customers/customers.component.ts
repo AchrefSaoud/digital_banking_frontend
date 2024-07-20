@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomerService } from '../customer.service';
 import { Customer } from '../model/customer.model';
+import { AuthService } from '../auth.service';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class CustomersComponent implements OnInit {
   errormessageAddCustomer!: string[];
   succesmessageAddCustomer!: string;
 
-  constructor(private customerService: CustomerService, private fb: FormBuilder) {
+  constructor(private customerService: CustomerService, private fb: FormBuilder,public auth:AuthService) {
     this.editCustomerForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]]

@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div class="col col-md-6">
+      <div class="col col-md-6" *ngIf="auth.roles.includes('ADMIN')">
         <div class="card" *ngIf="accountObservable">
           <div class="card-header">Operations</div>
           <div class="card-body">

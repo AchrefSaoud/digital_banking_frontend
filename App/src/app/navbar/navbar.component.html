@@ -21,6 +21,11 @@
           <a class="nav-link" routerLink="customers">Customers</a>
         </li>
       </ul>
+      <div class="d-flex align-items-center ms-auto" *ngIf="auth.isAuthenticated" >
+        <span class="text-white me-3">Welcome, <strong>{{auth.username}}</strong></span>
+        <button class="btn btn-danger">Logout</button>
+      </div>
+     
     </div>
   </div>
 </nav>

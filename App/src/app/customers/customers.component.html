@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <div class="container mt-5">
-  <div class="card mb-5 mt-xxl-4" *ngIf="!isEditFormVisible && !isDeleteFormVisible">
+  <div class="card mb-5 mt-xxl-4" *ngIf="!isEditFormVisible && !isDeleteFormVisible && auth.roles.includes('ADMIN')">
     <div class="card-body">
       <form [formGroup]="addCustomerForm" (ngSubmit)="addCustomer()">
         <div class="form-group">
