@@ -1,32 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CustomerService } from '../customer.service';
+import { Customer } from '../model/customer.model';
 
-interface Customer{
-  id:string;
-  name:string;
-  email:string;
-}
 
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.component.html',
-  styleUrl: './customers.component.css'
+  styleUrls: ['./customers.component.css']
 })
 export class CustomersComponent implements OnInit {
 
-  isEditFormVisible: boolean=false;
-  customers!:Customer[];
+  isEditFormVisible: boolean = false;
+  customers!: Customer[];
   editCustomerForm: FormGroup;
-  currentCustomerId:any;
+  currentCustomerId: any;
   errormessage!: string[];
   succesmessage!: string;
-  isDeleteFormVisible: boolean=false;
+  isDeleteFormVisible: boolean = false;
   addCustomerForm: FormGroup;
   errormessageAddCustomer!: string[];
   succesmessageAddCustomer!: string;
-  
-  constructor(private httpClient:HttpClient, private fb: FormBuilder){
+
+  constructor(private customerService: CustomerService, private fb: FormBuilder) {
     this.editCustomerForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]]
@@ -36,55 +32,56 @@ export class CustomersComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]]
     });
   }
- 
+
   ngOnInit(): void {
     this.loadCustomers();
-    this.errormessage=[];
-    this.succesmessage="";
-    this.errormessageAddCustomer=[];
-    this.succesmessageAddCustomer="";
+    this.errormessage = [];
+    this.succesmessage = "";
+    this.errormessageAddCustomer = [];
+    this.succesmessageAddCustomer = "";
   }
 
-  loadCustomers(){
-    this.httpClient.get<Customer[]>("http://localhost:8080/customers").subscribe(
-      data=>{
-        this.customers=data;
+  loadCustomers() {
+    this.customerService.getCustomers().subscribe(
+      data => {
+        this.customers = data;
         console.log(this.customers);
-      },error=>{
-        console.log("error occurs when loading cutomers"+error);
+      }, error => {
+        console.log("error occurs when loading customers: " + error);
       }
-    );  
+    );
   }
 
   updateCustomer() {
-    this.errormessage=[];
-    this.succesmessage="";
+    this.errormessage = [];
+    this.succesmessage = "";
     if (this.editCustomerForm.valid) {
       const updatedCustomer = {
         id: this.currentCustomerId,
         ...this.editCustomerForm.value
       };
 
-      this.httpClient.put(`http://localhost:8080/customers/${this.currentCustomerId}`, updatedCustomer).subscribe(
+      this.customerService.updateCustomer(updatedCustomer).subscribe(
         response => {
           this.loadCustomers();
-          this.succesmessage= "Customer updated successfully.";
+          this.succesmessage = "Customer updated successfully.";
         },
         error => {
           this.errormessage.push("error updating the customer");
         }
       );
-    }else{
-     if(!this.editCustomerForm.get('name')?.valid){
-      this.errormessage.push("name is not valid");
-     }
-     if(!this.editCustomerForm.get('email')?.valid){
-      this.errormessage.push("email is not valid");
-     }
+    } else {
+      if (!this.editCustomerForm.get('name')?.valid) {
+        this.errormessage.push("name is not valid");
+      }
+      if (!this.editCustomerForm.get('email')?.valid) {
+        this.errormessage.push("email is not valid");
+      }
     }
   }
+
   editCustomer(customer: any) {
-    this.isEditFormVisible=true;
+    this.isEditFormVisible = true;
     this.currentCustomerId = customer.id;
     this.editCustomerForm.setValue({
       name: customer.name,
@@ -92,30 +89,34 @@ export class CustomersComponent implements OnInit {
     });
     console.log(this.editCustomerForm);
   }
+
   closeEditForm() {
-    this.isEditFormVisible=false;
+    this.isEditFormVisible = false;
   }
-    
+
   closeDeleteForm() {
-    this.isDeleteFormVisible=false;
+    this.isDeleteFormVisible = false;
   }
+
   deleteCustomerForm(customer: Customer) {
-    this.isDeleteFormVisible=true;
-    this.currentCustomerId=customer.id;
-  }  
-  deleteCustomer(){
-    this.succesmessage="";
-    this.errormessage=[];
-    this.httpClient.delete(`http://localhost:8080/customers/${this.currentCustomerId}`).subscribe(
-      ()=>{
-        this.succesmessage="Customer is deleted Succesfully";
+    this.isDeleteFormVisible = true;
+    this.currentCustomerId = customer.id;
+  }
+
+  deleteCustomer() {
+    this.succesmessage = "";
+    this.errormessage = [];
+    this.customerService.deleteCustomer(this.currentCustomerId).subscribe(
+      () => {
+        this.succesmessage = "Customer is deleted successfully";
         this.loadCustomers();
       },
-      error=>{
-        this.errormessage.push("Customer is Not found");
+      error => {
+        this.errormessage.push("Customer is not found");
       }
     );
   }
+
   addCustomer() {
     this.succesmessageAddCustomer = "";
     this.errormessageAddCustomer = [];
@@ -123,7 +124,7 @@ export class CustomersComponent implements OnInit {
       const customer = {
         ...this.addCustomerForm.value
       }
-      this.httpClient.post<Customer>(`http://localhost:8080/customers`, customer).subscribe(
+      this.customerService.addCustomer(customer).subscribe(
         () => {
           this.loadCustomers();
           this.succesmessageAddCustomer = "Customer is added successfully";

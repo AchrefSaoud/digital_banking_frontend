@@ -2,23 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable, catchError, throwError } from 'rxjs';
 import { AccountService } from '../account.service';
-
-export interface AccountDetails {
-  accountId:            string;
-  balance:              number;
-  currentPage:          number;
-  totalPages:           number;
-  pageSize:             number;
-  accountOperationDTOS: AccountOperation[];
-}
-
-export interface AccountOperation {
-  id:            number;
-  operationDate: Date;
-  amount:        number;
-  type:          string;
-  description:   string;
-}
+import { AccountDetails } from '../model/account.model';
 
 @Component({
   selector: 'app-accounts',
